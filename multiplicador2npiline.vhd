@@ -7,6 +7,7 @@ generic(m: natural:=32 ; n: natural:= 16);--m=2*n
 
 port 
 	(
+	clk_in : in std_logic;
 	A : in std_logic_vector ((m-1) downto 0);
 	X : in std_logic_vector ((m-1) downto 0);
 	P_total : out std_logic_vector ((2*m-1) downto 0)
@@ -14,8 +15,8 @@ port
 end entity multiplicador2npiline ;
 
 Architecture a of multiplicador2npiline is
--- Zona de declaracion
 
+-- ---------------------COMPONENTES----------------------
 component  sum_n is
 
 generic(n:natural:=16);
@@ -50,16 +51,34 @@ port
 	DATA : in std_logic_vector ((n-1) downto 0);
 	Q : out std_logic_vector ((n-1) downto 0)
 	);
-	
+
+-------------------------DEFINICION_INDIVIDUAL-------------------------------	
 end component registroD;
 --Signal
 
 signal P_HH, P_LL, P_LH, P_HL : std_logic_vector ((m-1) downto 0);
 signal S_LL_HL, S_LH_HH :std_logic_vector((3*n-1) downto 0);
 --signal S_LL_HL, S_LH_HH :std_logic_vector((3*n-1) downto 0);
+signal regA_out, regA_out: std_logic_vector(n downto 0);
 
 constant z_16:std_logic_vector((n-1) downto 0):= "0000000000000000";
 begin
+
+RegA: registroD generic map(n=>32)
+port MAP(
+				clk  => clk_in,
+				DATA => A,
+				q    => regA_out
+
+			);
+RegX: registroD generic map(n=>32)
+port MAP(
+				clk  => clk_in,
+				DATA => x,
+				q    => regx_out
+
+			)
+			
 
 mult_HH: mult_n generic MAP(n=>16)
 port map(
